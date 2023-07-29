@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Login & Registration Form</title>
+    <!---Custom CSS File--->
+    <link rel="stylesheet" href="oo.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+      .password-container {
+        position: relative;
+      }
+      .password-toggle {
+        position: absolute;
+        top: 36%;
+        right: 10px;
+        transform: translateY(-50%);
+        cursor: pointer;
+        font-size: small;
+      }
+    </style>
+</head>
+<body>
+    <br> <br>
+    <div class="container"> 
+      <input type="checkbox" id="check">
+      <div class="login form" id="loginSection">
+        <header>Login</header>
+        <form action="#">
+          <label for="email">Email</label>
+          <input type="text" id="email" placeholder="Enter your email" required>
+  
+          <label for="loginPassword">Password</label>
+          <div class="password-container">
+            <input type="password" id="loginPassword" placeholder="Enter your password" required>
+            <span class="password-toggle" onclick="togglePasswordVisibility('loginPassword')">Show</span>
+          </div>
+          <a href="#">Forgot password?</a>
+          <input type="button" class="button" value="Login">
+        </form>
+        <div class="signup">
+          <span class="signup">Don't have an account?
+           <label for="check">Register</label>
+          </span>
+        </div>
+      </div>
+
+      <div class="registration form" id="registerSection">
+        <header>Register</header>
+        <form action="#">
+          <label for="fullName">Full Name <span class="required-marker">*</span></label>
+          <input type="text" id="fullName" placeholder="Enter your full name" required>
+
+          <label for="username">Username<span class="required-marker">*</span></label>
+          <input type="text" id="username" placeholder="Enter your username" required>
+
+          <label for="phoneNumber">Phone Number<span class="required-marker">*</span></label>
+          <input type="text" id="phoneNumber" placeholder="Enter your phone number" required>
+
+          <label for="signupEmail">Email<span class="required-marker">*</span></label>
+          <input type="text" id="signupEmail" placeholder="Enter your email" required>
+
+          <label for="gender">Gender<span class="required-marker">*</span></label>
+          <select id="gender" required>
+            <option value="">Select your gender</option>
+            <option value="male">Male</option>
+            <option value="female">Female</option>
+            <option value="other">Other</option>
+          </select>
+
+          
+          <label for="paymentPage">Go to payment Page<span class="required-marker">*</span></label>
+          <input type="text" id="paymentPage" placeholder="click here to go payment page" onclick="openPaymentPopup()" required>
+
+          <div class="overlay" id="paymentOverlay">
+            <div class="payment-content">
+              <h3>Payment Page</h3>
+  <div class="#">
+    <i class="refresh-icon fas fa-sync-alt" onclick="showRandomInformationPage()"></i>
+    <div class="information-page" id="page1">
+      <h3 style="color: rgb(0, 191, 0);">eSewa</h3> <hr>
+      <small>username</small>
+      <p>Safal Bhusal</p>
+      <small>number</small>
+      <p>9844782425</p>
+      <small>remarks</small>
+      <p>quickfaze</p>
+    </div>
+    <div class="information-page" id="page2">
+      <h3 style="color: rgb(235, 7, 7);">IME Pay</h3><hr>
+      <small>username</small>
+      <p>Safal Bhusal</p>
+      <small>number</small>
+      <p>9876543210</p>
+      <small>remarks</small>
+      <p>quickfaze</p>
+    </div>
+    <div class="information-page" id="page3">
+      <h3 style="color: rgb(45, 0, 191);">Bank</h3><hr>
+      <small>username</small>
+      <p>Safal Bhusal</p>
+      <small>number</small>
+      <p>1010100101010101</p>
+      <small>remarks</small>
+      <p>quickfaze</p>
+    </div>
+  </div>
+
+              <label for="fileInput"><small style="color: rgb(26, 219, 26);">*Please upload your payment voucher*</small></label>
+              <input class="aa" type="file" id="fileInput" name="fileInput">
+
+              <label for="ss">Select<span class="required-marker">*</span></label>
+              <select  id="ss" required>
+            <option value="">Select your payment</option>
+            <option value="male">E-Wallet</option>
+            <option value="female">Bank</option>
+          </select>
+
+              <button class="aa" id="confirmPaymentBtn" onclick="handlePayment()">Confirm Payment</button>
+            </div>
+          </div>
+
+          <label for="signupPassword">Password<span class="required-marker">*</span></label>
+          <div class="password-container">
+            <input type="password" id="signupPassword" placeholder="Create a password" required>
+            <span class="password-toggle" onclick="togglePasswordVisibility('signupPassword')">Show</span>
+          </div>
+          <p id="errorText" class="error-message"></p>
+          <button type="button" id="nextButton" onclick="registerUser()">Register</button>
+         </form>
+         <div class="signup">
+          <span class="signup">Already have an account? <label for="check">Login</label></span>
+        </div>
+      </div>
+    </div>
+
+  <script>
+    let paymentSuccess = false;
+    function validateForm() {
+  // Fetch form fields
+  const fullName = document.getElementById('fullName').value;
+  const username = document.getElementById('username').value;
+  const phoneNumber = document.getElementById('phoneNumber').value;
+  const signupEmail = document.getElementById('signupEmail').value;
+  const gender = document.getElementById('gender').value;
+  const signupPassword = document.getElementById('signupPassword').value;
+
+  // Regular expression for email validation
+  const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+  // Regular expression for phone number validation
+  const phonePattern = /^\d{10}$/;
+
+  // Check if all fields are filled
+  if (!fullName || !username || !phoneNumber || !signupEmail || !gender || !signupPassword) {
+    alert('Please fill in all fields.');
+    return false;
+  }
+
+  // Check if the email is valid
+  if (!signupEmail.match(emailPattern)) {
+    alert('Please enter a valid email address.');
+    return false;
+  }
+
+  // Check if the phone number is valid
+  if (!phoneNumber.match(phonePattern)) {
+    alert('Please enter a valid 10-digit phone number.');
+    return false;
+  }
+
+  // Add more custom validations as needed
+
+  // If all validations pass, the form will be submitted
+  return true;
+}
+
+function showPaymentSection() {
+    // Step 2: Check if the payment is successful before proceeding to the registration section
+    if (paymentSuccess) {
+      document.getElementById("registerSection").style.display = "block";
+      document.getElementById("paymentSection").style.display = "none";
+    } else {
+      alert("Please complete the payment process first.");
+    }
+  }
+function confirmPayment() {
+  // Step 3: Process the payment (you should implement the server-side logic separately)
+  // For this example, we'll simulate a successful payment.
+  setTimeout(function () {
+    paymentSuccess = true;
+    handlePaymentSuccess(); // Assuming the payment was successful
+    showPaymentSection(); // Proceed to the registration section
+    document.getElementById("nextButton").removeAttribute("disabled"); // Enable the "Register" button
+  }, 2000);
+}
+
+  function registerUser() {
+    // Step 4: Handle user registration logic here (e.g., send form data to the server)
+    // For this example, we'll just show an alert indicating successful registration.
+    alert("User registered successfully!");
+    document.getElementById("registerSection").style.display = "none"; // Hide the registration section
+    document.getElementById("confirmationSection").style.display = "block"; // Show the confirmation section
+  }
+
+    function goToRegisterSection() {
+        document.getElementById("confirmationSection").style.display = "none"; // Hide the confirmation section
+      document.getElementById("paymentSection").style.display = "none";
+      document.getElementById("registerSection").style.display = "block";
+    }
+
+    function goToLoginSection() {
+      document.getElementById("confirmationSection").style.display = "none"; // Hide the confirmation section
+      document.getElementById("registerSection").style.display = "none";
+      document.getElementById("paymentSection").style.display = "none";
+      document.getElementById("loginSection").style.display = "block"; // Show the login section
+    }
+
+    function togglePasswordVisibility(inputId) {
+      const passwordInput = document.getElementById(inputId);
+      const passwordToggle = passwordInput.nextElementSibling;
+
+      if (passwordInput.type === 'password') {
+        passwordInput.type = 'text';
+        passwordToggle.textContent = 'Hide';
+      } else {
+        passwordInput.type = 'password';
+        passwordToggle.textContent = 'Show';
+      }
+    }
+
+    const formInputs = document.querySelectorAll('input, select');
+        for (const input of formInputs) {
+            input.addEventListener('input', () => {
+                validateInputs();
+            });
+        }
+
+        function validateInputs() {
+          const fullName = document.getElementById('fullName').value;
+  const username = document.getElementById('username').value;
+  const phoneNumber = document.getElementById('phoneNumber').value;
+  const signupEmail = document.getElementById('signupEmail').value;
+  const gender = document.getElementById('gender').value;
+  const signupPassword = document.getElementById('signupPassword').value;
+
+  const nextButton = document.getElementById('nextButton');
+  const errorText = document.getElementById('errorText');
+
+  if (fullName && username && phoneNumber && signupEmail && gender && signupPassword) {
+    nextButton.removeAttribute('disabled');
+    errorText.textContent = '';
+  } else {
+    nextButton.setAttribute('disabled', 'true');
+    errorText.textContent = 'Please fill in all required fields.';
+  }
+}
+
+// aaaaaa
+document.addEventListener("DOMContentLoaded", function() {
+  showRandomInformationPage();
+});
+
+let previousPageIndex = -1;
+
+function showRandomInformationPage() {
+  const pages = document.querySelectorAll(".information-page");
+  let randomPageIndex = Math.floor(Math.random() * pages.length);
+
+  // Ensure the next random page is different from the previous one
+  while (randomPageIndex === previousPageIndex) {
+    randomPageIndex = Math.floor(Math.random() * pages.length);
+  }
+
+  previousPageIndex = randomPageIndex;
+
+  pages.forEach((page, index) => {
+    if (index === randomPageIndex) {
+      page.style.display = "block";
+    } else {
+      page.style.display = "none";
+    }
+  });
+}
+
+
+  /*aaaaaaaaa*/
+  function openPaymentPopup() {
+      // Show the payment overlay
+      document.getElementById("paymentOverlay").classList.add("visible");
+    }
+
+    function handlePayment() {
+      // Perform payment processing here. For this example, we'll simulate a successful payment after a delay.
+      setTimeout(function() {
+        handlePaymentSuccess();
+      }, 2000);
+    }
+
+    function handlePaymentSuccess() {
+      // Hide the payment overlay
+      document.getElementById("paymentOverlay").classList.remove("visible");
+      
+      // Fill the input box and disable it for further input
+      var paymentPageInput = document.getElementById("paymentPage");
+      paymentPageInput.value = "Payment Successfully";
+      paymentPageInput.classList.add("disabled-input");
+    }
+  
+
+    // Step 1: Add an event listener to the paymentPage input field
+document.getElementById("paymentPage").addEventListener("input", validatePaymentPage);
+
+// Step 2: Define the validatePaymentPage function
+function validatePaymentPage() {
+  const paymentPageInput = document.getElementById("paymentPage").value.trim();
+  const registerButton = document.getElementById("nextButton");
+
+  // Check if the paymentPageInput is not empty, if not empty, enable the "Register" button
+  if (paymentPageInput !== "") {
+    registerButton.removeAttribute("disabled");
+  } else {
+    registerButton.setAttribute("disabled", "true");
+  }
+}
+
+document.getElementById("paymentPage").addEventListener("input", validatePaymentPage);
+
+// Step 2: Define the validatePaymentPage function
+function validatePaymentPage() {
+    const paymentPageInput = document.getElementById("paymentPage").value.trim();
+    const registerButton = document.getElementById("nextButton");
+
+    // Check if the paymentPageInput is not empty, if not empty, enable the "Register" button
+    if (paymentPageInput !== "") {
+        registerButton.removeAttribute("disabled");
+    } else {
+        registerButton.setAttribute("disabled", "true");
+    }
+}
+
+// Step 3: Modify the registerUser function to handle the registration process
+function registerUser() {
+    const paymentPageInput = document.getElementById("paymentPage").value.trim();
+
+    // Check if the paymentPageInput is not empty
+    if (paymentPageInput !== "") {
+        // Step 4: Process user registration here (e.g., send form data to the server)
+        // For this example, we'll just show an alert indicating successful registration.
+        alert("User registered successfully!");
+
+        // Step 5: Hide the registration section and show the confirmation section
+        document.getElementById("registerSection").style.display = "none"; // Hide the registration section
+        document.getElementById("confirmationSection").style.display = "block"; // Show the confirmation section
+    } else {
+        alert("Please go to the payment page and complete the payment process first.");
+    }
+  }
+
+  </script>
+</body>
+</html>
